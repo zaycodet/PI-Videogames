@@ -1,0 +1,59 @@
+/* src/components/LandingPage.module.css */
+
+.container {
+    background-image: url('../../images/Background.png');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .title {
+    font-family: 'Games', sans-serif;
+    color: rgba(82, 113, 165, 0.8);
+    font-size: 70px;
+    margin-top: 250px;
+    margin-bottom: 20px;
+    animation: slideUp 3s ease-in-out, neonText 1.5s infinite alternate;
+  }
+  
+  .button {
+    font-family:'Courier New', monospace;
+    font-weight: bold; 
+    padding: 10px 20px;
+    background-color: rgb(17, 21, 28, 0.8);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    border-radius: 5px;
+    animation: slideUp 1.5s ease-in-out;
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.button:hover {
+    box-shadow: 0px 4px 6px rgb(54, 65, 86);
+}
+  
+  @keyframes slideUp {
+    from {
+      transform: translateY(20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes neonText {
+    from {
+        text-shadow: 0px 4px 6px rgb(54, 65, 86), 0px 0px 10px rgba(145, 171, 216, 0.8);
+    }
+    to {
+        text-shadow: 0px 4px 6px rgb(54, 65, 86), 0px 0px 20px rgba(145, 171, 216, 1);
+    }
+}
