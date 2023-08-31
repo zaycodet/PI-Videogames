@@ -1,5 +1,12 @@
 // actions.js
-import * as actionTypes from './actionTypes';
+import {GET_VIDEOGAMES,
+GET_VIDEOGAME_BY_ID,
+GET_VIDEOGAMES_BY_NAME,
+GET_GENRES,
+FILTER_BY_GENRE,
+FILTER_BY_ORIGIN,
+ALPHABETICAL_ORDER,
+RATING_ORDER } from './actionTypes';
 
 const URL = process.env.URL;
 const LOCALHOST = "http://localhost:3001";
@@ -16,10 +23,16 @@ export const getVideogames = () => (dispatch) => {
     );
 };
 
-export const getVideogameById = (videogame) => ({
-  type: actionTypes.GET_VIDEOGAME_BY_ID,
-  payload: videogame,
-});
+export const getVideogameById = (id) => (dispatch) => {
+  fetch(`${URL || LOCALHOST}/videogames/${id}`)
+    .then((response) => response.json())
+    .then((data) =>
+      dispatch({
+        type: GET_VIDEOGAME_BY_ID,
+        payload: data,
+      })
+    );
+};
 
 export const getVideogamesByName = (name) => (dispatch) => {
   fetch(`${URL || LOCALHOST}/videogames?name=${name}`)
@@ -43,12 +56,22 @@ export const getGenres = () => (dispatch) => {
     );
 };
 
-export const filterByGenre = (genreId) => ({
-  type: actionTypes.FILTER_BY_GENRE,
-  payload: genreId,
+export const filterByGenre = (payload) => ({
+  type: FILTER_BY_GENRE, 
+    payload
+  });
+
+export const filterByOrigin = (payload) => ({
+  type: FILTER_BY_ORIGIN,
+  payload,
 });
 
-export const filterByOrigin = (origin) => ({
-  type: actionTypes.FILTER_BY_ORIGIN,
-  payload: origin,
+export const alphabeticalOrder = (payload) => ({
+  type: ALPHABETICAL_ORDER,
+  payload,
+});
+
+export const ratingOrder = (payload) => ({
+  type: RATING_ORDER,
+  payload,
 });

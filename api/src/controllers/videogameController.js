@@ -9,19 +9,36 @@ const { Videogame, Genre } = require('../db');
 
 const getVideogames = async (req, res) => {
   try {
-    const response = await axios.get(`${URL}/games`, {
-      params: {
-        key: API_KEY,
-        page_size: 100,
-      },
+    const pageSizes = [40, 40, 20]; // Dividir en páginas de 40 y 20 para sumar 100
+    const apiResults = [];
+    const dbVideogames = await Videogame.findAll({
+      include: Genre,
     });
 
-    const videogames = response.data.results;
-    res.json(videogames);
+    for (const pageSize of pageSizes) {
+      const response = await axios.get(`${URL}/games`, {
+        params: {
+          key: API_KEY,
+          page_size: pageSize,
+        },
+      });
+
+      apiResults.push(...response.data.results);
+    }
+
+    const allResults = [...apiResults, ...dbVideogames];
+
+    if (allResults.length > 0) {
+      res.json(allResults);
+    } else {
+      res.status(404).json({ error: 'No videogames found in API or database' });
+    }
   } catch (error) {
-    res.status(500).json({ error: 'Error fetching videogames from API' });
+    res.status(500).json({ error: 'Error fetching videogames from API and database' });
   }
 };
+
+
 
 const getVideogameById = async (req, res) => {
     const id = req.params.idVideogame;
