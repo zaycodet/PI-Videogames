@@ -24,18 +24,31 @@ export const getVideogames = () => (dispatch) => {
 };
 
 export const getVideogameById = (id) => (dispatch) => {
+  console.log("Dispatching getVideogameById with ID:", id); // Log para verificar el ID que estás pasando
+
   fetch(`${URL || LOCALHOST}/videogames/${id}`)
-    .then((response) => response.json())
-    .then((data) =>
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log('Response from API:', data); // Log para verificar los datos recibidos desde la API
+
       dispatch({
         type: GET_VIDEOGAME_BY_ID,
         payload: data,
-      })
-    );
+      });
+    })
+    .catch((error) => {
+      console.error('Error fetching videogame details:', error);
+    });
 };
 
-export const getVideogamesByName = (name) => (dispatch) => {
-  fetch(`${URL || LOCALHOST}/videogames?name=${name}`)
+export const getVideogamesByName = (query) => (dispatch) => {
+  console.log('Searching by name:', query); // Agregar este log
+  fetch(`${URL || LOCALHOST}/videogames/name?q=${query}`)
     .then((response) => response.json())
     .then((data) =>
       dispatch({
@@ -44,6 +57,7 @@ export const getVideogamesByName = (name) => (dispatch) => {
       })
     );
 };
+
 
 export const getGenres = () => (dispatch) => {
   fetch(`${URL || LOCALHOST}/genres`)

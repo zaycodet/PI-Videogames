@@ -9,24 +9,38 @@ const { Videogame, Genre } = require('../db');
 
 const getVideogames = async (req, res) => {
   try {
-    const pageSizes = [40, 40, 20]; // Dividir en páginas de 40 y 20 para sumar 100
-    const apiResults = [];
+    const apiResults = new Set(); // Usamos un Set para evitar duplicados
+
+    // Hacemos tres solicitudes a la API para obtener 100 juegos en total
+    for (let page = 1; page <= 3; page++) {
+      const response = await axios.get(`${URL}/games`, {
+        params: {
+          key: API_KEY,
+          page,
+          page_size: 40, // Cada página contiene 40 juegos
+        },
+      });
+
+      const results = response.data.results;
+
+      // Agregamos los juegos de esta página al conjunto
+      results.forEach((game) => {
+        apiResults.add(game);
+      });
+    }
+
+    // Obtenemos los juegos de la base de datos
     const dbVideogames = await Videogame.findAll({
       include: Genre,
     });
 
-    for (const pageSize of pageSizes) {
-      const response = await axios.get(`${URL}/games`, {
-        params: {
-          key: API_KEY,
-          page_size: pageSize,
-        },
-      });
+    // Agregamos los juegos de la base de datos al conjunto
+    dbVideogames.forEach((game) => {
+      apiResults.add(game);
+    });
 
-      apiResults.push(...response.data.results);
-    }
-
-    const allResults = [...apiResults, ...dbVideogames];
+    // Convertimos el conjunto en un array
+    const allResults = [...apiResults];
 
     if (allResults.length > 0) {
       res.json(allResults);

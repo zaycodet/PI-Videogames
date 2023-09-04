@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
 import {
   getVideogames,
+  getVideogamesByName,
   getGenres,
   filterByGenre,
   filterByOrigin,
@@ -10,6 +10,7 @@ import {
   ratingOrder,
 } from '../../redux/actions'; // Asegúrate de importar las acciones correctamente
 import styles from './HomePage.module.css'; // Importa los estilos
+import Cards from '../Cards/Cards';
 
 const ITEMS_PER_PAGE = 15;
 
@@ -45,8 +46,26 @@ const HomePage = () => {
     dispatch(ratingOrder(type));
   };
 
-  const handlePageChange = pageNumber => {
-    setCurrentPage(pageNumber);
+  const totalPages = Math.ceil(videogames.length / ITEMS_PER_PAGE);
+
+  const firstPage = () => {
+    setCurrentPage(1);
+  };
+  
+  const lastPage = () => {
+    setCurrentPage(totalPages);
+  };
+
+  const nextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const prevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
   };
 
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -55,16 +74,30 @@ const HomePage = () => {
 
   return (
     <div className={styles.container}>
+      <h1 className={styles.neonTitle}>🎮 Gamers Hub 🎮</h1>
       <div className={styles.searchBar}>
         <input
+          className={styles.customButton}
           type="text"
           placeholder="Search by name..."
           value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
+          onChange={(e) => {
+            setSearchQuery(e.target.value);
+            console.log("Search query:", e.target.value);
+          }}
         />
-      </div>
+        <button
+          className={styles.customButton}
+          onClick={() => {
+            console.log("Search query:", searchQuery);
+            dispatch(getVideogamesByName(searchQuery));
+          }}
+        >
+          Search
+        </button>
       <div className={styles.filterSection}>
         <select
+          className={styles.customButton}
           value={selectedGenre}
           onChange={e => handleFilterByGenre(e.target.value)}
         >
@@ -76,6 +109,7 @@ const HomePage = () => {
           ))}
         </select>
         <select
+          className={styles.customButton}
           value={selectedOrigin}
           onChange={e => handleFilterByOrigin(e.target.value)}
         >
@@ -85,30 +119,39 @@ const HomePage = () => {
         </select>
       </div>
       <div className={styles.sortButtons}>
-        <button onClick={() => handleAlphabeticalSort('default')}>Default Order</button>
-        <button onClick={() => handleAlphabeticalSort('a-z')}>A-Z Order</button>
-        <button onClick={() => handleAlphabeticalSort('z-a')}>Z-A Order</button>
-        <button onClick={() => handleRatingSort('default')}>Default Rating</button>
-        <button onClick={() => handleRatingSort('low')}>Lowest Rating</button>
-        <button onClick={() => handleRatingSort('high')}>Highest Rating</button>
+        <button className={styles.customButton} onClick={() => handleAlphabeticalSort('default')}>Default Order</button>
+        <button className={styles.customButton} onClick={() => handleAlphabeticalSort('a-z')}>A/Z Order</button>
+        <button className={styles.customButton} onClick={() => handleAlphabeticalSort('z-a')}>Z/A Order</button>
+        <button className={styles.customButton} onClick={() => handleRatingSort('default')}>Default Rating</button>
+        <button className={styles.customButton} onClick={() => handleRatingSort('low')}>Lowest Rating</button>
+        <button className={styles.customButton} onClick={() => handleRatingSort('high')}>Highest Rating</button>
       </div>
-      <div className={styles.videogameList}>
-        {visibleVideogames.map(videogame => (
-          <div key={videogame.id} className={styles.videogameCard}>
-            <Link to={`/videogames/${videogame.id}`} className={styles.videogameLink}>
-              {videogame.name}
-            </Link>
-            {/* Render other details like image, genres, etc. */}
-          </div>
-        ))}
       </div>
+      <Cards videogames={visibleVideogames} />
+
       <div className={styles.pagination}>
-        {currentPage > 1 && (
-          <button onClick={() => handlePageChange(currentPage - 1)}>Previous Page</button>
-        )}
-        {visibleVideogames.length === ITEMS_PER_PAGE && (
-          <button onClick={() => handlePageChange(currentPage + 1)}>Next Page</button>
-        )}
+      <button
+        className={styles.customButton}
+        onClick={firstPage}
+        disabled={currentPage === 1}
+        >First</button>
+      <button
+        className={styles.customButton}
+        onClick={prevPage}
+        disabled={currentPage === 1}
+        >Prev</button>
+      <span className={styles.currentPage}>
+        {currentPage} of {totalPages}</span>
+      <button
+        className={styles.customButton}
+        onClick={nextPage}
+        disabled={currentPage === totalPages}
+      >Next</button>
+      <button
+        className={styles.customButton}
+        onClick={lastPage}
+        disabled={currentPage === totalPages}
+      >Last</button>
       </div>
     </div>
   );

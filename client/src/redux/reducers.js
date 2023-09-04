@@ -14,7 +14,8 @@ import {
     videogames: [],
     allVideogames: [],
     genres: [],
-    detail: [],
+    detail: null,
+    videogame: {},
     videogamesByName: [],
     currentPage: 1,
   };
@@ -41,52 +42,28 @@ import {
           videogamesByName: [...action.payload],
         };
   
-      case FILTER_BY_GENRE:
-        let genreFilter;
-        if (state.videogamesByName.length) {
+        case FILTER_BY_GENRE:
+          const { videogamesByName, allVideogames } = state;
+          const isSearching = Boolean(videogamesByName.length);
+        
+          let genreFilter;
+        
           if (action.payload === "All Genres") {
-            genreFilter = [...state.videogamesByName];
+            genreFilter = isSearching ? [...videogamesByName] : [...allVideogames];
           } else {
-            const games = [...state.videogamesByName];
-            games.forEach((el) => {
-              if (typeof el.genres[0] !== "string") {
-                el.genres = el.genres.map((e) => e.name);
-              }
-            });
-  
-            genreFilter = games.filter((el) =>
-              el.genres.includes(action.payload)
+            const genreName = action.payload;
+        
+            genreFilter = (isSearching ? [...videogamesByName] : [...allVideogames]).filter(
+              (game) => game.genres.some((genre) => genre.name === genreName)
             );
           }
+        
           if (!genreFilter.length) genreFilter.push("Error");
-  
+        
           return {
             ...state,
             videogames: [...genreFilter],
           };
-        } else {
-          if (action.payload === "All Genres") {
-            genreFilter = [...state.allVideogames];
-          } else {
-            const games = [...state.allVideogames];
-            games.forEach((el) => {
-              if (typeof el.genres[0] !== "string") {
-                el.genres = el.genres.map((e) => e.name);
-              }
-            });
-  
-            genreFilter = games.filter((el) =>
-              el.genres.includes(action.payload)
-            );
-          }
-  
-          if (!genreFilter.length) genreFilter.push("Error");
-  
-          return {
-            ...state,
-            videogames: [...genreFilter],
-          };
-        }
   
       case FILTER_BY_ORIGIN:
         let originFilter;
@@ -138,12 +115,12 @@ import {
         } else {
           alphabeticalOrder =
             action.payload === "a-z"
-              ? [...state.videogames].order((a, b) => {
+              ? [...state.videogames].sort((a, b) => {
                   if (a.name > b.name) return 1;
                   if (b.name > a.name) return -1;
                   return 0;
                 })
-              : [...state.videogames].order((a, b) => {
+              : [...state.videogames].sort((a, b) => {
                   if (a.name > b.name) return -1;
                   if (b.name > a.name) return 1;
                   return 0;
@@ -164,12 +141,12 @@ import {
         } else {
           ratingOrder =
             action.payload === "low"
-              ? [...state.videogames].order((a, b) => {
+              ? [...state.videogames].sort((a, b) => {
                   if (a.rating > b.rating) return 1;
                   if (b.rating > a.rating) return -1;
                   return 0;
                 })
-              : [...state.videogames].order((a, b) => {
+              : [...state.videogames].sort((a, b) => {
                   if (a.rating > b.rating) return -1;
                   if (b.rating > a.rating) return 1;
                   return 0;
@@ -182,35 +159,10 @@ import {
         };
   
       case GET_VIDEOGAME_BY_ID:
-        let videogameInfo;
-        if (!Array.isArray(action.payload)) {
-          videogameInfo = { ...action.payload };
-  
-          if (videogameInfo.genres.length) {
-            videogameInfo.genres =
-              typeof videogameInfo.genres[0] !== "string"
-                ? videogameInfo.genres.map((g) => g.name).join(", ")
-                : videogameInfo.genres.join(", ");
-          } else {
-            videogameInfo.genres = `No Genres`;
-          }
-  
-          if (videogameInfo.platforms.length) {
-            videogameInfo.platforms = videogameInfo.platforms.join(", ");
-          } else {
-            videogameInfo.platforms = `No Platforms`;
-          }
-  
-          if (!videogameInfo.description.length)
-            videogameInfo.description = `No Description...`;
-        } else {
-          videogameInfo = [...action.payload];
-        }
-  
         return {
-          ...state,
-          detail: videogameInfo,
-        };
+        ...state,
+        videogame: action.payload,
+      };
       default:
         return state;
     }
