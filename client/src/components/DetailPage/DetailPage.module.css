@@ -25,7 +25,7 @@ body {
   }
   
   .videogameDetails h1 {
-    font-family: 'Games';
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-size: 24px;
     margin-bottom: 20px;
   }
@@ -43,7 +43,7 @@ body {
   }
   
   .customButton {
-    font-family: 'Games';
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     margin-top: 5px;
     margin-bottom: 5px;
     margin-left: 3px;

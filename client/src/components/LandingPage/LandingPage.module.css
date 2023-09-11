@@ -12,8 +12,8 @@
   }
   
   .title {
-    font-family: 'Games', sans-serif;
-    color: rgba(82, 113, 165, 0.8);
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    color: rgba(252, 252, 252, 0.8);
     font-size: 70px;
     margin-top: 250px;
     margin-bottom: 20px;
@@ -21,11 +21,11 @@
   }
   
   .button {
-    font-family:'Courier New', monospace;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-weight: bold; 
     padding: 10px 20px;
     background-color: rgb(17, 21, 28, 0.8);
-    color: white;
+    color: whitesmoke;
     border: none;
     cursor: pointer;
     font-size: 20px;

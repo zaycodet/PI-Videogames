@@ -1,39 +1,39 @@
 const axios = require('axios');
-const { Genre } = require('../db');
-const { v4: uuidv4 } = require('uuid'); // Importa la función para generar UUIDs
+const { Genres } = require('../db');
+const { v4: uuidv4 } = require('uuid');
 
 const API_KEY = process.env.API_KEY;
 const URL = process.env.URL;
 
+const getAllGenresFromAPI = async () => {
+  const URL_API = `${URL}/genres?key=${API_KEY}`;
+  const response = await axios.get(`${URL_API}`);
+  const genresArray = response.data.results.map((genre) => genre.name);
+  return genresArray;
+};
+
 const getGenres = async (req, res) => {
   try {
-    // Intentamos obtener los géneros de la API
-    const response = await axios.get(`${URL}/genres`, {
-      params: {
-        key: API_KEY,
-      },
-    });
+    const genresDb = await Genres.findAll();
 
-    const genresFromAPI = response.data.results;
+    if (!genresDb.length) {
+      const genresArray = await getAllGenresFromAPI();
 
-    // Transformar los IDs de integer a UUIDs y guardar en la base de datos
-    const genresToSave = genresFromAPI.map(genre => ({
-      id: uuidv4(), // Genera un UUID único
-      nombre: genre.name,
-    }));
-    
-    // Guardamos los géneros en la base de datos
-    await Genre.bulkCreate(genresToSave);
+      await Promise.all(
+        genresArray.map(async (genreName) => {
+          await Genres.findOrCreate({
+            where: {
+              id: uuidv4(),
+              name: genreName,
+            },
+          });
+        })
+      );
 
-    // Luego intentamos obtener los géneros de la base de datos
-    const genresFromDB = await Genre.findAll();
-
-    if (genresFromDB.length > 0) {
-      // Si hay géneros en la base de datos, enviarlos
-      res.json(genresFromDB);
+      res.json(genresArray);
     } else {
-      // Si no hay géneros en la base de datos, enviar un mensaje adecuado
-      res.status(404).json({ error: 'Genres not found in database' });
+      const genresNames = genresDb.map((g) => g.name);
+      res.json(genresNames);
     }
   } catch (error) {
     console.error('Error fetching genres:', error);

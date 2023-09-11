@@ -4,26 +4,24 @@ const { v4: uuidv4 } = require('uuid');
 // Luego le injectamos la conexion a sequelize.
 module.exports = (sequelize) => {
   // defino el modelo
-  sequelize.define('Videogame', {
+  sequelize.define('Videogames', {
     id: {
       type: DataTypes.UUID,
-      defaultValue: uuidv4(),
+      defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
+      allowNull: false,
     },
-    nombre: {
+    name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    descripcion: {
+    description: {
       type: DataTypes.TEXT,
     },
-    plataformas: {
-      type: DataTypes.ARRAY(DataTypes.STRING),
-    },
-    imagen: {
+    background_image: {
       type: DataTypes.STRING,
     },
-    fecha_lanzamiento: {
+    release_date: {
       type: DataTypes.DATE,
     },
     rating: {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import {
   getVideogames,
   getVideogamesByName,
@@ -16,6 +17,7 @@ const ITEMS_PER_PAGE = 15;
 
 const HomePage = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const videogames = useSelector(state => state.videogames);
   const genres = useSelector(state => state.genres);
   const [currentPage, setCurrentPage] = useState(1);
@@ -28,9 +30,9 @@ const HomePage = () => {
     dispatch(getGenres());
   }, [dispatch]);
 
-  const handleFilterByGenre = genre => {
-    setSelectedGenre(genre);
-    dispatch(filterByGenre(genre));
+  const handleFilterByGenre = genres => {
+    setSelectedGenre(genres);
+    dispatch(filterByGenre(genres));
   };
 
   const handleFilterByOrigin = origin => {
@@ -45,6 +47,13 @@ const HomePage = () => {
   const handleRatingSort = type => {
     dispatch(ratingOrder(type));
   };
+
+  const filteredVideogames =
+  selectedGenre === 'All Genres'
+    ? videogames // Mostrar todos los videojuegos si se selecciona "All Genres"
+    : videogames.filter((videogame) =>
+        videogame.genres.includes(selectedGenre)
+      );;
 
   const totalPages = Math.ceil(videogames.length / ITEMS_PER_PAGE);
 
@@ -70,7 +79,7 @@ const HomePage = () => {
 
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
-  const visibleVideogames = videogames.slice(startIndex, endIndex);
+  const visibleVideogames = filteredVideogames.slice(startIndex, endIndex); // Aplica la paginación
 
   return (
     <div className={styles.container}>
@@ -96,18 +105,22 @@ const HomePage = () => {
           Search
         </button>
       <div className={styles.filterSection}>
-        <select
-          className={styles.customButton}
-          value={selectedGenre}
-          onChange={e => handleFilterByGenre(e.target.value)}
-        >
-          <option value="All Genres">All Genres</option>
-          {genres.map(genre => (
-            <option key={genre.id} value={genre.nombre}>
-              {genre.nombre}
-            </option>
-          ))}
-        </select>
+      <select
+        className={styles.customButton}
+        value={selectedGenre}
+        onChange={(e) => {
+          const selectedGenre = e.target.value;
+          setSelectedGenre(selectedGenre); // Actualiza el estado del género seleccionado
+          handleFilterByGenre(selectedGenre); // Despacha la acción de filtro
+        }}
+      >
+        <option value="All Genres">All Genres</option>
+        {genres.map((genre) => (
+          <option key={genre.id} value={genre.name}>
+            {genre.name}
+          </option>
+        ))}
+      </select>
         <select
           className={styles.customButton}
           value={selectedOrigin}
@@ -118,6 +131,13 @@ const HomePage = () => {
           <option value="api">API</option>
         </select>
       </div>
+      <button
+        className={styles.customButton}
+        onClick={() => {
+          history.push("/form");
+        }}
+      >Add your own videogame!
+      </button>
       <div className={styles.sortButtons}>
         <button className={styles.customButton} onClick={() => handleAlphabeticalSort('default')}>Default Order</button>
         <button className={styles.customButton} onClick={() => handleAlphabeticalSort('a-z')}>A/Z Order</button>

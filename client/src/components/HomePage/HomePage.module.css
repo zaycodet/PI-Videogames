@@ -8,9 +8,9 @@
   }
 
   .neonTitle {
-    font-family: 'Games';
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-size: 100px;
-    color: #212D40;
+    color: rgba(200, 220, 255, 0.8);
     margin-bottom: 2rem;
     text-shadow: 0 0 10px #364156, 0 0 20px #586680, 0 0 30px #8392ad;
     animation: neonGlow 1.5s ease-in-out infinite alternate;
@@ -26,7 +26,7 @@
   }
   
   .customButton {
-    font-family: 'Games';
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     margin-top: 5px;
     margin-bottom: 5px;
     margin-left: 3px;
@@ -46,7 +46,7 @@
   
   .currentPage {
     color:white;
-    font-family: 'Games';
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     margin-left: 4px;
     margin-right:4px; 
   }
