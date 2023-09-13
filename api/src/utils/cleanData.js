@@ -5,7 +5,7 @@ const cleanData = (rawData) => {
       description: game.description || "There's no description",
       platforms: game.platforms?.map((platform) => platform.name) || [],
       background_image: game.background_image,
-      released: game.released,
+      release_date: game.release_date,
       rating: game.rating,
       genres: game.genres?.map((genre) => genre.name) || [],
       createdVideoGame: false,

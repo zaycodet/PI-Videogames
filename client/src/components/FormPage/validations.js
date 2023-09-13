@@ -1,7 +1,7 @@
 export const validations = (form) => {
     let errors = [];
   
-    const regexNombre = /^[A-Za-z\s]+$/;
+    const regexNombre = /^[A-Za-z0-9\s]+$/;
     const regexDescription = /^[A-Za-z0-9\s]*[A-Za-z0-9][A-Za-z0-9\s]*$/;
     const regexImagen = /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/;
   
@@ -19,7 +19,7 @@ export const validations = (form) => {
       errors.description = "Description is required";
     } else if (form.description.length < 50 || form.description.length > 1000) {
       errors.description =
-        "Not be less than 50 characters, not more than 1000 characters";
+        "The description should be between 50 to 1000 characters";
     } else if (!regexDescription.test(form.description)) {
       errors.description = "The description is invalid";
     } else {

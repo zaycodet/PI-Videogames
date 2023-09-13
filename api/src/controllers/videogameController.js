@@ -1,4 +1,3 @@
-const { Op } = require('sequelize');
 const axios = require('axios');
 const { cleanData } = require('../utils/cleanData');
 require('dotenv').config();
