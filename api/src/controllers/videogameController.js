@@ -50,7 +50,7 @@ const getAllVideogames = async (req, res) => {
             attributes: [],
           },
         },
-      ], // Agregar corchetes para incluir múltiples asociaciones
+      ],
     });
 
     console.log('DB Videogames:', dbVideogames); // Agregar console.log() con dbVideogames
@@ -80,7 +80,6 @@ const getVideogameById = async (req, res) => {
     
     let videogameResult;
 
-    // Intenta buscar en la API RAWG por ID utilizando la API Key
     try {
       const response = await axios.get(`${URL}/games/${id}`, {
         params: {
@@ -89,11 +88,10 @@ const getVideogameById = async (req, res) => {
       });
       videogameResult = response.data;
     } catch (apiError) {
-      // Si no se encuentra en la API, busca en la base de datos por UUID
       console.log('Videogame not found in API, searching in database');
       videogameResult = await Videogames.findOne({
         where: {
-          id: id // Cambia 'id' al campo real que contiene los UUID en la base de datos SQL
+          id: id
         },
         include: [
           {
@@ -130,10 +128,10 @@ const getVideogameById = async (req, res) => {
 };
   
 const getVideogamesByName = async (req, res) => {
-  const { name } = req.query; // Obtén el valor del parámetro de búsqueda desde req.query
+  const { name } = req.query;
 
   try {
-    let URL_API= `${URL}/games?search=${name}&key=${API_KEY}&page_size=100`; // Endpoint con search
+    let URL_API= `${URL}/games?search=${name}&key=${API_KEY}&page_size=100`;
 
     const response = await axios.get(URL_API);
     const videogamesApi = await response.data.results;
@@ -226,31 +224,10 @@ const getVideogamesByName = async (req, res) => {
     }
   };
   
-  
-
-  const deleteVideogame = async (req, res) => {
-    const idVideogame = req.params.idVideogame;
-  
-    try {
-      const getVideogame = await Videogames.findByPk(idVideogame);
-  
-      if (getVideogame) {
-        await getVideogame.destroy();
-        res.json({ message: 'The videogame was deleted' });
-      } else {
-        res.status(404).json({ error: 'Videogame not found' });
-      }
-    } catch (error) {
-      console.error('Error deleting videogame:', error);
-      res.status(500).json({ error: 'Error deleting videogame' });
-    }
-  };
-  
 
 module.exports = {
   getAllVideogames,
   getVideogameById,
   getVideogamesByName,
   createVideogame,
-  deleteVideogame,
 };

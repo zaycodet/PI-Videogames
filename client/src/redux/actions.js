@@ -23,7 +23,7 @@ const handleResponseError = (response) => {
 
 // Action creators
 export const getVideogames = () => (dispatch) => {
-  console.log('Fetching all videogames...'); // Log informativo
+  console.log('Fetching all videogames...');
   fetch(`${LOCALHOST}/videogames`)
     .then(handleResponseError)
     .then((data) =>
@@ -33,23 +33,23 @@ export const getVideogames = () => (dispatch) => {
       })
     )
     .catch((error) => {
-      console.error('Error fetching all videogames:', error); // Manejo de error
+      console.error('Error fetching all videogames:', error); 
     });
 };
 
 export const getVideogameById = (id) => (dispatch) => {
-  console.log('Fetching videogame by ID:', id); // Log informativo
+  console.log('Fetching videogame by ID:', id);
   fetch(`${LOCALHOST}/videogames/${id}`)
     .then(handleResponseError)
     .then((data) => {
-      console.log('Response from API:', data); // Log informativo
+      console.log('Response from API:', data);
       dispatch({
         type: GET_VIDEOGAME_BY_ID,
         payload: data,
       });
     })
     .catch((error) => {
-      console.error('Error fetching videogame details:', error); // Manejo de error
+      console.error('Error fetching videogame details:', error);
     });
 };
 
@@ -58,8 +58,8 @@ export const getVideogamesByName = (name) => {
     try {
       const response = await fetch(`${LOCALHOST}/videogames/name?name=${name}`);
       const data = await response.json();
-      dispatch({ type: GET_VIDEOGAMES_BY_NAME, payload: data }); // Actualiza el estado con los resultados
-      return data; // Devuelve los resultados
+      dispatch({ type: GET_VIDEOGAMES_BY_NAME, payload: data }); 
+      return data;
     } catch (error) {
       console.error('Error fetching videogames by name:', error);
     }
@@ -68,7 +68,7 @@ export const getVideogamesByName = (name) => {
 
 
 export const getGenres = () => (dispatch) => {
-  console.log('Fetching genres...'); // Log informativo
+  console.log('Fetching genres...'); 
   fetch(`${LOCALHOST}/genres`)
     .then(handleResponseError)
     .then((data) =>
@@ -78,12 +78,12 @@ export const getGenres = () => (dispatch) => {
       })
     )
     .catch((error) => {
-      console.error('Error fetching genres:', error); // Manejo de error
+      console.error('Error fetching genres:', error);
     });
 };
 
 export const getPlatforms = () => (dispatch) => {
-  console.log('Fetching platforms...'); // Log informativo
+  console.log('Fetching platforms...'); 
   fetch(`${LOCALHOST}/platforms`)
     .then(handleResponseError)
     .then((data) =>
@@ -93,13 +93,13 @@ export const getPlatforms = () => (dispatch) => {
       })
     )
     .catch((error) => {
-      console.error('Error fetching platforms:', error); // Manejo de error
+      console.error('Error fetching platforms:', error); 
     });
 };
 
 export const postVideogame = (videogameData) => async (dispatch) => {
   try {
-    console.log('Creating a new videogame...'); // Log informativo
+    console.log('Creating a new videogame...'); 
     // Realiza la solicitud POST al servidor con los datos del videojuego
     await fetch(`${LOCALHOST}/videogames`, {
       method: 'POST',
@@ -109,16 +109,15 @@ export const postVideogame = (videogameData) => async (dispatch) => {
       },
     });
 
-    console.log('New videogame created successfully.'); // Log informativo
+    console.log('New videogame created successfully.');
 
-    // Puedes despachar alguna acción si es necesario
     dispatch({
       type: POST_VIDEOGAME,
       payload: JSON,
     });
 
   } catch (error) {
-    console.error('Error creating the videogame:', error); // Manejo de error
+    console.error('Error creating the videogame:', error); 
     throw error;
   }
 };

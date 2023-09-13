@@ -11,11 +11,8 @@ const VideogameDetails = () => {
   const videogame = useSelector((state) => state.videogame);
 
   useEffect(() => {
-    console.log("Dispatching getVideogameById with ID:", id); // Verifica el ID que estás pasando
     dispatch(getVideogameById(id));
   }, [dispatch, id]);
-
-  console.log("Videogame from useSelector:", videogame); // Verifica el contenido de videogame
 
     // Función para eliminar las etiquetas <p> del texto de descripción
   const stripHtmlTags = (html) => {
@@ -25,7 +22,7 @@ const VideogameDetails = () => {
   };
 
   const handleClose = () => {
-    history.push('/videogames'); // Función para volver atrás en el historial
+    history.push('/videogames');
   };
 
   return (

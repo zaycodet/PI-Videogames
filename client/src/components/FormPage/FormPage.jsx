@@ -81,10 +81,6 @@ const handlePlatformChange = (platformName) => {
     });
   };
 
-  // Agrega console.log para verificar los valores de genres y platforms
-  console.log("genres:", genres);
-  console.log("platforms:", platforms);
-
   return (
     <div className={styles.formContainer}>
       <h2>Add a New Videogame</h2>

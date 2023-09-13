@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const videogameController = require('../controllers/videogameController'); // Importa el controlador
+const videogameController = require('../controllers/videogameController');
 const genresController = require('../controllers/genresController');
 const platformsController = require('../controllers/platformsController');
 

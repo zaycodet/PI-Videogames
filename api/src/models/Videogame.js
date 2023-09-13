@@ -3,7 +3,6 @@ const { v4: uuidv4 } = require('uuid');
 // Exportamos una funcion que define el modelo
 // Luego le injectamos la conexion a sequelize.
 module.exports = (sequelize) => {
-  // defino el modelo
   sequelize.define('Videogames', {
     id: {
       type: DataTypes.UUID,
@@ -28,6 +27,6 @@ module.exports = (sequelize) => {
       type: DataTypes.DECIMAL(3, 1),
     },
   }, {
-    timestamps: false, // Desactivar la creación de createdAt y updatedAt
+    timestamps: false,
   });
 }
