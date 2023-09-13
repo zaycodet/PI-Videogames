@@ -20,6 +20,7 @@ const initialState = {
   videogame: {},
   videogamesByName: [],
   currentPage: 1,
+  error: null,
 };
 
 function rootReducer(state = initialState, action) {
@@ -61,30 +62,47 @@ function rootReducer(state = initialState, action) {
       } else {
         const genreName = payload;
         genreFilter = (isSearching ? [...state.videogamesByName] : [...state.allVideogames]).filter(
-          (game) => game.genres.some((genre) => genre.name === genreName)
+          (game) => game.genres.some((genre) => genre === genreName)
         );
       }
 
-      if (!genreFilter.length) genreFilter.push('Error');
+      if (!genreFilter.length) {
+        genreFilter.push('Error');
+      }
 
       return {
         ...state,
         videogames: [...genreFilter],
+        error: genreFilter.length === 1 && genreFilter[0] === 'Error' ? 'There are no videogames with that genre' : null,
       };
 
     case FILTER_BY_ORIGIN:
       let originFilter;
-
+      
       if (payload === 'all') {
         originFilter = [...state.allVideogames];
       } else if (payload === 'database') {
-        originFilter = state.allVideogames.filter((game) => typeof game.id === 'string' && game.id !== 251509);
+        originFilter = state.allVideogames.filter((game) => {
+          if (typeof game.id === 'string' && game.id !== 251509) {
+            return true;
+          } else {
+            return false;
+          }
+        });
       } else if (payload === 'api') {
-        originFilter = state.allVideogames.filter((game) => typeof game.id === 'number' && game.id !== 251509);
+        originFilter = state.allVideogames.filter((game) => {
+          if (typeof game.id === 'number' && game.id !== 251509) {
+            return true;
+          } else {
+            return false;
+          }
+        });
       }
-
-      if (!originFilter.length) originFilter.push('Error');
-
+      
+      if (!originFilter.length) {
+        originFilter.push('Error');
+      }
+      
       return {
         ...state,
         videogames: [...originFilter],

@@ -53,20 +53,19 @@ export const getVideogameById = (id) => (dispatch) => {
     });
 };
 
-export const getVideogamesByName = (query) => (dispatch) => {
-  console.log('Searching by name:', query); // Log informativo
-  fetch(`${LOCALHOST}/videogames/name?q=${query}`)
-    .then(handleResponseError)
-    .then((data) =>
-      dispatch({
-        type: GET_VIDEOGAMES_BY_NAME,
-        payload: data,
-      })
-    )
-    .catch((error) => {
-      console.error('Error searching by name:', error); // Manejo de error
-    });
+export const getVideogamesByName = (name) => {
+  return async (dispatch) => {
+    try {
+      const response = await fetch(`${LOCALHOST}/videogames/name?name=${name}`);
+      const data = await response.json();
+      dispatch({ type: GET_VIDEOGAMES_BY_NAME, payload: data }); // Actualiza el estado con los resultados
+      return data; // Devuelve los resultados
+    } catch (error) {
+      console.error('Error fetching videogames by name:', error);
+    }
+  };
 };
+
 
 export const getGenres = () => (dispatch) => {
   console.log('Fetching genres...'); // Log informativo

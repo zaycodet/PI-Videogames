@@ -35,7 +35,7 @@
     border: none;
     border-radius: 4px;
     background-color: rgb(33, 45, 64, 0.8);
-    color: white;
+    color: azure;
     cursor: pointer;
     transition: background-color 0.2s; /* Agrega una transición para el color de fondo */
   }
@@ -45,7 +45,7 @@
   }
   
   .currentPage {
-    color:white;
+    color:azure;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     margin-left: 4px;
     margin-right:4px; 
@@ -62,7 +62,7 @@
       border-radius: 4px;
       width: 100%;
       background-color: #212D40;
-      color: white;
+      color: azure;
     }
   }
   
@@ -76,7 +76,7 @@
       border: none;
       border-radius: 4px;
       background-color: #364156;
-      color: white;
+      color: azure;
       margin-right: 1rem;
     }
   }
@@ -90,7 +90,7 @@
       border-radius: 4px;
       margin-right: 1rem;
       background-color: #364156;
-      color: white;
+      color: azure;
       cursor: pointer;
   
       &:hover {
@@ -98,7 +98,13 @@
       }
     }
   }
-      
+  
+  .errorMessage {
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 35px;
+    color: azure;
+  }
+
   .pagination {
     display: flex;
     justify-content: center;
@@ -111,7 +117,7 @@
       border-radius: 4px;
       margin: 0 0.5rem;
       background-color: #364156;
-      color: white;
+      color: azure;
       cursor: pointer;
   
       &:hover {

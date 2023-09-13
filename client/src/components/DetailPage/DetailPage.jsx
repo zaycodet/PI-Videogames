@@ -25,7 +25,7 @@ const VideogameDetails = () => {
   };
 
   const handleClose = () => {
-    history.goBack(); // Función para volver atrás en el historial
+    history.push('/videogames'); // Función para volver atrás en el historial
   };
 
   return (
@@ -40,12 +40,13 @@ const VideogameDetails = () => {
           />
           <p>ID: {videogame.id}</p>
           <p>Platforms: {videogame.platforms && videogame.platforms.length
-            ? videogame.platforms.map((platform) => platform.platform.name).join(', ')
-            : 'No platforms available'}</p>
-          <p>Release Date: {videogame.released}</p>
+            ? videogame.platforms.map((platform) => platform.name || platform.platform.name).join(', ')
+            : 'No platforms available'}
+          </p>
+          <p>Release Date: {videogame.released || videogame.release_date}</p>
           <p>Rating: {videogame.rating}</p>
           <p>Genres: {videogame.genres && videogame.genres.length
-            ? videogame.genres.map((genres) => genres.name).join(', ')
+            ? videogame.genres.map((genre) => genre.name).join(', ')
             : 'No genres available'}</p>
           <p>{stripHtmlTags(videogame.description)}</p>
           <button className={styles.customButton} onClick={handleClose}>

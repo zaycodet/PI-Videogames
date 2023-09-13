@@ -9,8 +9,8 @@ import {
   filterByOrigin,
   alphabeticalOrder,
   ratingOrder,
-} from '../../redux/actions'; // Asegúrate de importar las acciones correctamente
-import styles from './HomePage.module.css'; // Importa los estilos
+} from '../../redux/actions'; 
+import styles from './HomePage.module.css';
 import Cards from '../Cards/Cards';
 
 const ITEMS_PER_PAGE = 15;
@@ -20,10 +20,12 @@ const HomePage = () => {
   const history = useHistory();
   const videogames = useSelector(state => state.videogames);
   const genres = useSelector(state => state.genres);
+  const error = useSelector((state) => state.error);
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchName, setSearchName] = useState('');
   const [selectedGenre, setSelectedGenre] = useState('All Genres');
   const [selectedOrigin, setSelectedOrigin] = useState('all');
+  const [searchResults, setSearchResults] = useState([]);
 
   useEffect(() => {
     dispatch(getVideogames());
@@ -48,12 +50,15 @@ const HomePage = () => {
     dispatch(ratingOrder(type));
   };
 
-  const filteredVideogames =
-  selectedGenre === 'All Genres'
-    ? videogames // Mostrar todos los videojuegos si se selecciona "All Genres"
-    : videogames.filter((videogame) =>
-        videogame.genres.includes(selectedGenre)
-      );;
+  const handleSearch = () => {
+    dispatch(getVideogamesByName(searchName)).then((result) => {
+      if (Array.isArray(result)) {
+        setSearchResults(result);
+      } else {
+        setSearchResults([]); // Si no se encontraron resultados, establecer como array vacío
+      }
+    });
+  };
 
   const totalPages = Math.ceil(videogames.length / ITEMS_PER_PAGE);
 
@@ -79,7 +84,7 @@ const HomePage = () => {
 
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
-  const visibleVideogames = filteredVideogames.slice(startIndex, endIndex); // Aplica la paginación
+  const visibleVideogames = videogames.slice(startIndex, endIndex)
 
   return (
     <div className={styles.container}>
@@ -89,21 +94,18 @@ const HomePage = () => {
           className={styles.customButton}
           type="text"
           placeholder="Search by name..."
-          value={searchQuery}
+          value={searchName}
           onChange={(e) => {
-            setSearchQuery(e.target.value);
+            setSearchName(e.target.value);
             console.log("Search query:", e.target.value);
           }}
         />
         <button
-          className={styles.customButton}
-          onClick={() => {
-            console.log("Search query:", searchQuery);
-            dispatch(getVideogamesByName(searchQuery));
-          }}
-        >
-          Search
-        </button>
+        className={styles.customButton}
+        onClick={handleSearch}
+      >
+        Search
+      </button>
       <div className={styles.filterSection}>
       <select
         className={styles.customButton}
@@ -116,8 +118,8 @@ const HomePage = () => {
       >
         <option value="All Genres">All Genres</option>
         {genres.map((genre) => (
-          <option key={genre.id} value={genre.name}>
-            {genre.name}
+          <option key={genre.id} value={genre}>
+            {genre}
           </option>
         ))}
       </select>
@@ -147,8 +149,10 @@ const HomePage = () => {
         <button className={styles.customButton} onClick={() => handleRatingSort('high')}>Highest Rating</button>
       </div>
       </div>
-      <Cards videogames={visibleVideogames} />
-
+      <Cards videogames={searchName ? searchResults : visibleVideogames} />
+      <div className={styles.errorMessage}>
+        {error && <p>{error}</p>}
+      </div>
       <div className={styles.pagination}>
       <button
         className={styles.customButton}

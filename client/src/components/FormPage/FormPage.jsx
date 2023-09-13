@@ -69,6 +69,7 @@ const handlePlatformChange = (platformName) => {
     event.preventDefault();
     console.log("Form data:", form); // Agregar este console.log
     dispatch(postVideogame(form));
+    history.push("/videogames");
     setForm({
       name: "",
       description: "",

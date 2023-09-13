@@ -129,42 +129,45 @@ const getVideogameById = async (req, res) => {
   }
 };
   
-  const getVideogamesByName = async (req, res) => {
-    const query = req.query.q; // El valor del parámetro de búsqueda
-    const formattedQuery = query.toLowerCase(); // Convertir la búsqueda a minúsculas
-  
-    try {
-      console.log(`Searching videogames with name: ${formattedQuery}`);
-  
-      // Buscar en la base de datos local
-      const videogamesFromDB = await Videogames.findAll({
-        where: {
-          name: {
-            [Op.iLike]: `%${formattedQuery}%`, // Realizar búsqueda sin importar mayúsculas o minúsculas
+const getVideogamesByName = async (req, res) => {
+  const { name } = req.query; // Obtén el valor del parámetro de búsqueda desde req.query
+
+  try {
+    let URL_API= `${URL}/games?search=${name}&key=${API_KEY}&page_size=100`; // Endpoint con search
+
+    const response = await axios.get(URL_API);
+    const videogamesApi = await response.data.results;
+    const videogamesDb = await Videogames.findAll({
+      include: [
+        {
+          model: Genres,
+          as: "genres",
+          through: {
+            attributes: [],
           },
         },
-      });
-  
-      // Si no hay resultados en la base de datos, buscar en la API RAWG
-      if (videogamesFromDB.length === 0) {
-        const response = await axios.get(`${URL}/games`, {
-          params: {
-            key: API_KEY,
-            search: formattedQuery,
-            page_size: 15,
-          },
-        });
-  
-        const videogamesFromAPI = response.data.results;
-        res.json(videogamesFromAPI);
-      } else {
-        res.json(videogamesFromDB);
+      ],
+    });
+    const cleanedApiData = cleanData(videogamesApi);
+
+    const allVideogames = [...cleanedApiData, ...videogamesDb];
+
+    if (name) {
+      const filterVideogames = allVideogames.filter((game) =>
+        game.name.toLowerCase().includes(name.toLowerCase())
+      );
+      if (!filterVideogames.length) {
+        return res.status(404).json({ error: "This name didn't match any videogame" });
       }
-    } catch (error) {
-      console.error('Error fetching videogames by name:', error);
-      res.status(500).json({ error: 'Error fetching videogames by name' });
+      return res.json(filterVideogames.slice(0, 15));
     }
-  };
+    return res.json(allVideogames.slice(0, 15));
+  } catch (error) {
+    console.error('Error fetching videogames by name:', error);
+    return res.status(500).json({ error: 'Error fetching videogames by name' });
+  }
+};
+
 
   const createVideogame = async (req, res) => {
     try {
